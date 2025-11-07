@@ -368,6 +368,7 @@ const Game2048 = () => {
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         padding: '32px'
       }}>
+        
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -379,6 +380,7 @@ const Game2048 = () => {
             fontWeight: 'bold',
             color: '#1f2937'
           }}>2048</h1>
+          
           <div style={{ textAlign: 'right' }}>
             <div style={{
               fontSize: '14px',
@@ -391,6 +393,15 @@ const Game2048 = () => {
               color: '#ea580c'
             }}>{score}</div>
           </div>
+        </div>
+
+        <div style={{ margin: '24px 0', fontSize: '14px', color: '#4b5563' }}>
+          <h2 style={{ fontWeight: 'bold', marginBottom: '8px' }}>ルール</h2>
+            <p>1. 矢印キーでタイルを動かします。</p>
+            <p>2. 同じ数字がぶつかると合体して2倍になります。</p>
+            <p>3. 動かすたびに新しいタイル（2 または 4）が出現します。</p>
+            <p>4. 2048 を作れるように目指しましょう。</p>
+            <p>5. 動けなくなったらゲームオーバーです。</p>
         </div>
 
         <div ref={canvasRef} style={{ marginBottom: '16px' }} />
@@ -428,15 +439,6 @@ const Game2048 = () => {
         >
           新しいゲーム
         </button>
-
-        <div style={{
-          marginTop: '24px',
-          fontSize: '14px',
-          color: '#4b5563'
-        }}>
-          <p style={{ marginBottom: '8px' }}>🎮 矢印キーで操作</p>
-          <p>同じ数字のタイルを合わせて2048を目指そう！</p>
-        </div>
       </div>
     </div>
   );
