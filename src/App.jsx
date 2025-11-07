@@ -7,7 +7,9 @@ const Game2048 = () => {
   const gameState = useRef({
     grid: [],
     score: 0,
-    gameOver: false
+    gameOver: false,
+    tiles: [], // アニメーション用のタイル情報
+    newTiles: [] // 新しく追加されたタイル
   });
 
   useEffect(() => {
@@ -23,6 +25,7 @@ const Game2048 = () => {
         const size = 4;
         const tileSize = 100;
         const gap = 10;
+        const animationSpeed = 0.2;
         const colors = {
           0: '#cdc1b4',
           2: '#eee4da',
@@ -47,6 +50,8 @@ const Game2048 = () => {
           gameState.current.grid = Array(size).fill(null).map(() => Array(size).fill(0));
           gameState.current.score = 0;
           gameState.current.gameOver = false;
+          gameState.current.tiles = [];
+          gameState.current.newTiles = [];
           setScore(0);
           setGameOver(false);
           addNewTile();
@@ -64,25 +69,54 @@ const Game2048 = () => {
           }
           if (empty.length > 0) {
             const { i, j } = empty[Math.floor(Math.random() * empty.length)];
-            gameState.current.grid[i][j] = Math.random() < 0.9 ? 2 : 4;
+            const val = Math.random() < 0.9 ? 2 : 4;
+            gameState.current.grid[i][j] = val;
+            // 新しいタイルをマーク（スケールアニメーション用）
+            gameState.current.newTiles.push({ i, j, scale: 0, val });
           }
         };
 
         const move = (direction) => {
+          const oldGrid = JSON.parse(JSON.stringify(gameState.current.grid));
           let moved = false;
           const newGrid = JSON.parse(JSON.stringify(gameState.current.grid));
+          const movements = []; // タイルの移動情報
 
           const moveLeft = () => {
             for (let i = 0; i < size; i++) {
               let arr = newGrid[i].filter(val => val !== 0);
-              for (let j = 0; j < arr.length - 1; j++) {
-                if (arr[j] === arr[j + 1]) {
+              const original = [...newGrid[i]];
+
+              // 移動前の位置を記録
+              let fromPositions = [];
+              for (let j = 0; j < size; j++) {
+                if (original[j] !== 0) {
+                  fromPositions.push({ val: original[j], from: j });
+                }
+              }
+
+              let toIndex = 0;
+              for (let j = 0; j < arr.length; j++) {
+                if (j < arr.length - 1 && arr[j] === arr[j + 1]) {
                   arr[j] *= 2;
                   gameState.current.score += arr[j];
                   arr.splice(j + 1, 1);
                   moved = true;
                 }
               }
+
+              // 移動情報を記録
+              for (let k = 0; k < arr.length; k++) {
+                if (fromPositions[k]) {
+                  movements.push({
+                    row: i,
+                    fromCol: fromPositions[k].from,
+                    toCol: k,
+                    val: arr[k]
+                  });
+                }
+              }
+
               while (arr.length < size) arr.push(0);
               if (JSON.stringify(arr) !== JSON.stringify(newGrid[i])) moved = true;
               newGrid[i] = arr;
@@ -122,10 +156,62 @@ const Game2048 = () => {
           }
 
           if (moved) {
+            // アニメーション用のタイル情報を設定
+            gameState.current.tiles = [];
+            for (let i = 0; i < size; i++) {
+              for (let j = 0; j < size; j++) {
+                if (oldGrid[i][j] !== 0) {
+                  // 移動先を探す
+                  let targetI = i;
+                  let targetJ = j;
+
+                  if (newGrid[i][j] !== oldGrid[i][j] || newGrid[i][j] === 0) {
+                    // タイルが移動または合体した
+                    for (let ni = 0; ni < size; ni++) {
+                      for (let nj = 0; nj < size; nj++) {
+                        if (direction === 'left' && ni === i && nj <= j) {
+                          if (newGrid[ni][nj] !== 0) {
+                            targetI = ni;
+                            targetJ = nj;
+                          }
+                        } else if (direction === 'right' && ni === i && nj >= j) {
+                          if (newGrid[ni][nj] !== 0) {
+                            targetI = ni;
+                            targetJ = nj;
+                          }
+                        } else if (direction === 'up' && nj === j && ni <= i) {
+                          if (newGrid[ni][nj] !== 0) {
+                            targetI = ni;
+                            targetJ = nj;
+                          }
+                        } else if (direction === 'down' && nj === j && ni >= i) {
+                          if (newGrid[ni][nj] !== 0) {
+                            targetI = ni;
+                            targetJ = nj;
+                          }
+                        }
+                      }
+                    }
+                  }
+
+                  gameState.current.tiles.push({
+                    val: oldGrid[i][j],
+                    fromI: i,
+                    fromJ: j,
+                    toI: targetI,
+                    toJ: targetJ,
+                    progress: 0
+                  });
+                }
+              }
+            }
+
             gameState.current.grid = newGrid;
-            addNewTile();
-            setScore(gameState.current.score);
-            checkGameOver();
+            setTimeout(() => {
+              addNewTile();
+              setScore(gameState.current.score);
+              checkGameOver();
+            }, 150);
           }
         };
 
@@ -141,32 +227,102 @@ const Game2048 = () => {
           setGameOver(true);
         };
 
+        const getTilePosition = (row, col) => {
+          return {
+            x: gap + col * (tileSize + gap),
+            y: gap + row * (tileSize + gap)
+          };
+        };
+
         p.draw = () => {
           p.background('#bbada0');
 
+          // 背景のグリッドを描画
           for (let i = 0; i < size; i++) {
             for (let j = 0; j < size; j++) {
-              const x = gap + j * (tileSize + gap);
-              const y = gap + i * (tileSize + gap);
-              const val = gameState.current.grid[i][j];
+              const { x, y } = getTilePosition(i, j);
+              p.fill(colors[0]);
+              p.noStroke();
+              p.rect(x, y, tileSize, tileSize, 5);
+            }
+          }
 
-              p.fill(colors[val] || '#3c3a32');
+          // アニメーション中のタイルを描画
+          if (gameState.current.tiles.length > 0) {
+            let allComplete = true;
+
+            for (let tile of gameState.current.tiles) {
+              if (tile.progress < 1) {
+                allComplete = false;
+                tile.progress += animationSpeed;
+                if (tile.progress > 1) tile.progress = 1;
+              }
+
+              const fromPos = getTilePosition(tile.fromI, tile.fromJ);
+              const toPos = getTilePosition(tile.toI, tile.toJ);
+
+              const x = p.lerp(fromPos.x, toPos.x, tile.progress);
+              const y = p.lerp(fromPos.y, toPos.y, tile.progress);
+
+              p.fill(colors[tile.val] || '#3c3a32');
               p.noStroke();
               p.rect(x, y, tileSize, tileSize, 5);
 
-              if (val !== 0) {
-                p.fill(val <= 4 ? '#776e65' : '#f9f6f2');
-                p.textAlign(p.CENTER, p.CENTER);
-                p.textSize(val < 100 ? 48 : val < 1000 ? 36 : 30);
-                p.textStyle(p.BOLD);
-                p.text(val, x + tileSize / 2, y + tileSize / 2);
+              p.fill(tile.val <= 4 ? '#776e65' : '#f9f6f2');
+              p.textAlign(p.CENTER, p.CENTER);
+              p.textSize(tile.val < 100 ? 48 : tile.val < 1000 ? 36 : 30);
+              p.textStyle(p.BOLD);
+              p.text(tile.val, x + tileSize / 2, y + tileSize / 2);
+            }
+
+            if (allComplete) {
+              gameState.current.tiles = [];
+            }
+          } else {
+            // 通常の描画
+            for (let i = 0; i < size; i++) {
+              for (let j = 0; j < size; j++) {
+                const val = gameState.current.grid[i][j];
+                if (val !== 0) {
+                  const { x, y } = getTilePosition(i, j);
+
+                  // 新しいタイルのスケールアニメーション
+                  let scale = 1;
+                  const newTileIndex = gameState.current.newTiles.findIndex(t => t.i === i && t.j === j);
+                  if (newTileIndex !== -1) {
+                    const newTile = gameState.current.newTiles[newTileIndex];
+                    newTile.scale += 0.15;
+                    if (newTile.scale > 1) {
+                      newTile.scale = 1;
+                      gameState.current.newTiles.splice(newTileIndex, 1);
+                    }
+                    scale = newTile.scale;
+                  }
+
+                  p.push();
+                  p.translate(x + tileSize / 2, y + tileSize / 2);
+                  p.scale(scale);
+                  p.translate(-tileSize / 2, -tileSize / 2);
+
+                  p.fill(colors[val] || '#3c3a32');
+                  p.noStroke();
+                  p.rect(0, 0, tileSize, tileSize, 5);
+
+                  p.fill(val <= 4 ? '#776e65' : '#f9f6f2');
+                  p.textAlign(p.CENTER, p.CENTER);
+                  p.textSize(val < 100 ? 48 : val < 1000 ? 36 : 30);
+                  p.textStyle(p.BOLD);
+                  p.text(val, tileSize / 2, tileSize / 2);
+
+                  p.pop();
+                }
               }
             }
           }
         };
 
         p.keyPressed = () => {
-          if (gameState.current.gameOver) return;
+          if (gameState.current.gameOver || gameState.current.tiles.length > 0) return;
 
           if (p.keyCode === p.LEFT_ARROW) {
             move('left');
