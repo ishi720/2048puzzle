@@ -23,8 +23,8 @@ const Game2048 = () => {
     script.onload = () => {
       const sketch = (p) => {
         const size = 4;
-        const tileSize = 100;
-        const gap = 10;
+        let tileSize;
+        let gap;
         const animationSpeed = 0.2;
         const colors = {
           0: '#cdc1b4',
@@ -42,7 +42,17 @@ const Game2048 = () => {
         };
 
         p.setup = () => {
-          p.createCanvas(size * tileSize + (size + 1) * gap, size * tileSize + (size + 1) * gap);
+          const baseTile = 100;
+          const baseGap = 10;
+
+          // スマホでも表示が切れないように画面幅に応じて縮小
+          const maxWidth = Math.min(window.innerWidth * 0.9, 450); // 最大450px, 画面の90%以内
+          const scale = maxWidth / (4 * baseTile + 5 * baseGap);
+
+          tileSize = baseTile * scale;
+          gap = baseGap * scale;
+
+          p.createCanvas(4 * tileSize + 5 * gap, 4 * tileSize + 5 * gap);
           initGame();
         };
 
@@ -368,7 +378,7 @@ const Game2048 = () => {
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         padding: '32px'
       }}>
-        
+
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -380,7 +390,7 @@ const Game2048 = () => {
             fontWeight: 'bold',
             color: '#1f2937'
           }}>2048</h1>
-          
+
           <div style={{ textAlign: 'right' }}>
             <div style={{
               fontSize: '14px',
