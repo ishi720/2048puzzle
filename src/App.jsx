@@ -11,6 +11,7 @@ const Game2048 = () => {
     tiles: [], // アニメーション用のタイル情報
     newTiles: [] // 新しく追加されたタイル
   });
+  const [showRules, setShowRules] = useState(false);
 
   useEffect(() => {
     let p5Instance = null;
@@ -373,9 +374,6 @@ const Game2048 = () => {
       padding: '32px'
     }}>
       <div style={{
-        background: 'white',
-        borderRadius: '16px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         padding: '32px'
       }}>
 
@@ -383,7 +381,10 @@ const Game2048 = () => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '24px'
+          marginBottom: '24px',
+          background: 'white',
+          padding: '16px',
+          borderRadius: '8px'
         }}>
           <h1 style={{
             fontSize: '36px',
@@ -405,14 +406,21 @@ const Game2048 = () => {
           </div>
         </div>
 
-        <div style={{ margin: '24px 0', fontSize: '14px', color: '#4b5563' }}>
-          <h2 style={{ fontWeight: 'bold', marginBottom: '8px' }}>ルール</h2>
-            <p>1. 矢印キーでタイルを動かします。</p>
-            <p>2. 同じ数字がぶつかると合体して2倍になります。</p>
-            <p>3. 動かすたびに新しいタイル（2 または 4）が出現します。</p>
-            <p>4. 2048 を作れるように目指しましょう。</p>
-            <p>5. 動けなくなったらゲームオーバーです。</p>
-        </div>
+        <button
+          onClick={() => setShowRules(true)}
+          style={{
+            marginBottom: '16px',
+            background: '#fbbf24',
+            color: '#1f2937',
+            fontWeight: 'bold',
+            padding: '8px 16px',
+            borderRadius: '8px',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          ルールを表示
+        </button>
 
         <div ref={canvasRef} style={{ marginBottom: '16px' }} />
 
@@ -449,7 +457,57 @@ const Game2048 = () => {
         >
           新しいゲーム
         </button>
+
+
       </div>
+      {showRules && (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '24px',
+          borderRadius: '12px',
+          width: '85%',
+          maxWidth: '500px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+          animation: 'fadeIn 0.2s ease-out'
+        }}>
+          <h2 style={{ fontSize: '20px', marginBottom: '12px', fontWeight: 'bold' }}>ルール</h2>
+          <p>1. 矢印キーまたはスワイプでタイルを動かします。</p>
+          <p>2. 同じ数字がぶつかると合体して2倍になります。</p>
+          <p>3. 動かすたびに新しいタイル（2 または 4）が出現します。</p>
+          <p>4. 2048 を作れるように目指しましょう。</p>
+          <p>5. 動かせなくなったらゲームオーバーです。</p>
+
+          <button
+            onClick={() => setShowRules(false)}
+            style={{
+              marginTop: '16px',
+              width: '100%',
+              background: '#f97316',
+              color: 'white',
+              padding: '10px',
+              borderRadius: '8px',
+              border: 'none',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+          >
+            閉じる
+          </button>
+        </div>
+      </div>
+    )}
     </div>
   );
 };
