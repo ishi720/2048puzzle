@@ -332,6 +332,7 @@ const Game2048 = () => {
           }
         };
 
+
         p.keyPressed = () => {
           if (gameState.current.gameOver || gameState.current.tiles.length > 0) return;
 
@@ -343,6 +344,59 @@ const Game2048 = () => {
             move('up');
           } else if (p.keyCode === p.DOWN_ARROW) {
             move('down');
+          }
+        };
+
+        // タッチ操作用の変数
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        p.touchStarted = () => {
+          if (gameState.current.gameOver || gameState.current.tiles.length > 0) return;
+
+          // canvas内のタッチのみ反応
+          if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
+            touchStartX = p.mouseX;
+            touchStartY = p.mouseY;
+            return false; // デフォルトの動作を防ぐ
+          }
+        };
+
+        p.touchEnded = () => {
+          if (gameState.current.gameOver || gameState.current.tiles.length > 0) return;
+
+          // canvas内のタッチのみ反応
+          if (touchStartX >= 0 && touchStartX <= p.width && touchStartY >= 0 && touchStartY <= p.height) {
+            touchEndX = p.mouseX;
+            touchEndY = p.mouseY;
+
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const minSwipeDistance = 30;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+              // 横方向のスワイプ
+              if (Math.abs(deltaX) > minSwipeDistance) {
+                if (deltaX > 0) {
+                  move('right');
+                } else {
+                  move('left');
+                }
+              }
+            } else {
+              // 縦方向のスワイプ
+              if (Math.abs(deltaY) > minSwipeDistance) {
+                if (deltaY > 0) {
+                  move('down');
+                } else {
+                  move('up');
+                }
+              }
+            }
+
+            return false; // デフォルトの動作を防ぐ
           }
         };
 
