@@ -366,7 +366,11 @@ const Game2048 = () => {
             touchStartX = p.mouseX;
             touchStartY = p.mouseY;
             isTouchInCanvas = true;
-            return false;
+
+            // ルール表示中はタッチ操作を無効化
+            if (p.showRulesFlag) {
+              return false;
+            }
           }
         };
 
@@ -406,7 +410,10 @@ const Game2048 = () => {
             touchStartX = null;
             touchStartY = null;
             isTouchInCanvas = false;
-            return false;
+            // ルール表示中はタッチ操作を無効化
+            if (p.showRulesFlag) {
+              return false;
+            }
           }
         };
 
