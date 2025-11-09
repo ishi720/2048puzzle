@@ -348,10 +348,9 @@ const Game2048 = () => {
         };
 
         // タッチ操作用の変数
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchEndX = 0;
-        let touchEndY = 0;
+        let touchStartX = null;
+        let touchStartY = null;
+        let isTouchInCanvas = false;
 
         p.touchStarted = () => {
           if (gameState.current.gameOver || gameState.current.tiles.length > 0) return;
@@ -360,6 +359,7 @@ const Game2048 = () => {
           if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
             touchStartX = p.mouseX;
             touchStartY = p.mouseY;
+            isTouchInCanvas = true;
             return false; // デフォルトの動作を防ぐ
           }
         };
@@ -368,9 +368,9 @@ const Game2048 = () => {
           if (gameState.current.gameOver || gameState.current.tiles.length > 0) return;
 
           // canvas内のタッチのみ反応
-          if (touchStartX >= 0 && touchStartX <= p.width && touchStartY >= 0 && touchStartY <= p.height) {
-            touchEndX = p.mouseX;
-            touchEndY = p.mouseY;
+          if (isTouchInCanvas && touchStartX !== null && touchStartY !== null) {
+            const touchEndX = p.mouseX;
+            const touchEndY = p.mouseY;
 
             const deltaX = touchEndX - touchStartX;
             const deltaY = touchEndY - touchStartY;
@@ -395,7 +395,11 @@ const Game2048 = () => {
                 }
               }
             }
-
+            // リセット
+            touchStartX = null;
+            touchStartY = null;
+            isTouchInCanvas = false;
+            
             return false; // デフォルトの動作を防ぐ
           }
         };
