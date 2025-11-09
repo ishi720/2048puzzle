@@ -41,6 +41,7 @@ const Game2048 = () => {
           1024: '#edc53f',
           2048: '#edc22e'
         };
+        const isRulesOpen = () => showRules;
 
         p.setup = () => {
           const baseTile = 100;
@@ -354,6 +355,7 @@ const Game2048 = () => {
         let isTouchInCanvas = false;
 
         p.touchStarted = () => {
+          if (isRulesOpen()) return;
           if (gameState.current.gameOver || gameState.current.tiles.length > 0) return;
 
           // canvas内のタッチのみ反応
@@ -366,6 +368,7 @@ const Game2048 = () => {
         };
 
         p.touchEnded = () => {
+          if (isRulesOpen()) return;
           if (gameState.current.gameOver || gameState.current.tiles.length > 0) return;
 
           // canvas内のタッチのみ反応
@@ -405,6 +408,7 @@ const Game2048 = () => {
         };
 
         p.touchMoved = () => {
+          if (isRulesOpen()) return;
           // canvas内でタッチが開始された場合、移動中もスクロールを防ぐ
           if (isTouchInCanvas) {
             return false;
