@@ -423,10 +423,8 @@ const Game2048 = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
       minHeight: '100vh',
-      background: 'linear-gradient(to bottom right, #fffbeb, #fed7aa)',
-      padding: '32px'
+      background: 'linear-gradient(to bottom right, #fffbeb, #fed7aa)'
     }}>
       <div style={{
         padding: '32px'
