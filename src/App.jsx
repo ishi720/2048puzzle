@@ -12,7 +12,10 @@ const Game2048 = () => {
     newTiles: [] // 新しく追加されたタイル
   });
   const [showRules, setShowRules] = useState(false);
-
+  // ルール表示状態を p5 側に反映
+  useEffect(() => {
+    window.showRulesFlag = showRules;
+  }, [showRules]);
   useEffect(() => {
     let p5Instance = null;
 
@@ -531,7 +534,9 @@ const Game2048 = () => {
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 999
-      }}>
+      }}
+      onClick={() => setShowRules(false)}
+      >
         <div style={{
           background: 'white',
           padding: '24px',
@@ -540,7 +545,9 @@ const Game2048 = () => {
           maxWidth: '500px',
           boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
           animation: 'fadeIn 0.2s ease-out'
-        }}>
+        }}
+        onClick={(e) => e.stopPropagation()}
+        >
           <h2 style={{ fontSize: '20px', marginBottom: '12px', fontWeight: 'bold' }}>ルール</h2>
           <p>1. 矢印キーまたはスワイプでタイルを動かします。</p>
           <p>2. 同じ数字がぶつかると合体して2倍になります。</p>
