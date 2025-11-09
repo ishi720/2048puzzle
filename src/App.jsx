@@ -489,7 +489,13 @@ const Game2048 = () => {
           ルールを表示
         </button>
 
-        <div ref={canvasRef} style={{ marginBottom: '16px' }} />
+        <div
+          ref={canvasRef}
+          style={{
+            marginBottom: '16px',
+            pointerEvents: showRules ? 'none' : 'auto'
+          }}
+        />
 
         <button
           onClick={() => window.resetGame && window.resetGame()}
