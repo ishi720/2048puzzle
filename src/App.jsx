@@ -427,7 +427,7 @@ const Game2048 = () => {
       background: 'linear-gradient(to bottom right, #fffbeb, #fed7aa)'
     }}>
       <div style={{
-        padding: '32px'
+        padding: '32px 0px'
       }}>
 
         <div style={{
