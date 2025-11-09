@@ -360,6 +360,7 @@ const Game2048 = () => {
             touchStartX = p.mouseX;
             touchStartY = p.mouseY;
             isTouchInCanvas = true;
+            return false;
           }
         };
 
@@ -398,6 +399,14 @@ const Game2048 = () => {
             touchStartX = null;
             touchStartY = null;
             isTouchInCanvas = false;
+            return false;
+          }
+        };
+
+        p.touchMoved = () => {
+          // canvas内でタッチが開始された場合、移動中もスクロールを防ぐ
+          if (isTouchInCanvas) {
+            return false;
           }
         };
 
