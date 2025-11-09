@@ -235,6 +235,7 @@ const Game2048 = () => {
             }
           }
           gameState.current.gameOver = true;
+          alert(`ゲームオーバー！\nスコア: ${gameState.current.score}`);
           setGameOver(true);
         };
 
@@ -485,20 +486,6 @@ const Game2048 = () => {
         </button>
 
         <div ref={canvasRef} style={{ marginBottom: '16px' }} />
-
-        {gameOver && (
-          <div style={{
-            textAlign: 'center',
-            marginBottom: '16px'
-          }}>
-            <p style={{
-              fontSize: '24px',
-              fontWeight: 'bold',
-              color: '#dc2626',
-              marginBottom: '8px'
-            }}>ゲームオーバー！</p>
-          </div>
-        )}
 
         <button
           onClick={() => window.resetGame && window.resetGame()}
