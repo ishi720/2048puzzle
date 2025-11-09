@@ -360,7 +360,6 @@ const Game2048 = () => {
             touchStartX = p.mouseX;
             touchStartY = p.mouseY;
             isTouchInCanvas = true;
-            return false; // デフォルトの動作を防ぐ
           }
         };
 
@@ -399,8 +398,6 @@ const Game2048 = () => {
             touchStartX = null;
             touchStartY = null;
             isTouchInCanvas = false;
-            
-            return false; // デフォルトの動作を防ぐ
           }
         };
 
