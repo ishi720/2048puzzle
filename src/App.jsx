@@ -452,7 +452,7 @@ const Game2048 = () => {
             fontSize: '36px',
             fontWeight: 'bold',
             color: '#1f2937'
-          }}>2048</h1>
+          }}>4x4</h1>
 
           <div style={{ textAlign: 'right' }}>
             <div style={{
