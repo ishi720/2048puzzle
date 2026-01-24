@@ -1,16 +1,57 @@
-# React + Vite
+# 2048 Puzzle Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+4x4グリッド上でタイルをスライドさせ、同じ数字を合体させて2048を目指すパズルゲームです。
 
-Currently, two official plugins are available:
+## 遊び方
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **矢印キー** または **スワイプ** でタイルを動かします
+2. 同じ数字がぶつかると合体して2倍になります
+3. 動かすたびに新しいタイル（2 または 4）が出現します
+4. 2048を作ることを目指しましょう
+5. 動かせなくなったらゲームオーバーです
 
-## React Compiler
+## 機能
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- キーボード操作（矢印キー）
+- タッチ/スワイプ操作（モバイル対応）
+- スムーズなタイルアニメーション
+- レスポンシブデザイン
+- スコア表示
+- ルール表示ポップアップ
+- ゲームリセット機能
 
-## Expanding the ESLint configuration
+## 技術スタック
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **React** 19
+- **Vite** 7
+- **p5.js** - ゲーム描画
+- **Tailwind CSS** 4
+
+## 開発環境のセットアップ
+
+### 必要な環境
+
+- Node.js 18以上
+
+### インストール
+
+```bash
+npm install
+```
+
+### 開発サーバーの起動
+
+```bash
+npm run dev
+```
+
+ブラウザで `http://localhost:5173` を開いてください。
+
+### ビルド
+
+```bash
+npm run build
+```
+
+ビルド成果物は `dist` フォルダに出力されます。
+
