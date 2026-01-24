@@ -2,6 +2,9 @@
 
 4x4グリッド上でタイルをスライドさせ、同じ数字を合体させて2048を目指すパズルゲームです。
 
+<img width="1200" height="800" alt="2048puzzle" src="https://github.com/user-attachments/assets/88217001-51fc-4ca7-8d36-ba280462ba18" />
+
+
 ## 遊び方
 
 1. **矢印キー** または **スワイプ** でタイルを動かします
